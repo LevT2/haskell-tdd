@@ -15,6 +15,7 @@ extra-source-files:  README.md
 library
   hs-source-dirs:      src
   exposed-modules:     Math.Simple
+                       Parser08.Parser
   build-depends:       base >= 4.7 && < 5
   default-language:    Haskell2010
 
