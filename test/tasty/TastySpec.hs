@@ -1,4 +1,4 @@
-module Spec where
+module TastySpec where
 
 import Test.Tasty (TestTree, defaultMain, testGroup)
 

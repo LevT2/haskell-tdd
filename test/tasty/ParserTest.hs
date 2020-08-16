@@ -4,7 +4,7 @@ import Test.Tasty (TestTree, defaultMain, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
 import Parser08.Parser (Token(..), lookAhead)
 
-prettyTestCaseShow :: Show a => TestName -> a -> TestTree
+prettyTestCaseShow :: Show a => String -> a -> TestTree
 prettyTestCaseShow prettyOut construct =
   testCase prettyOut $
     show construct @?= prettyOut
