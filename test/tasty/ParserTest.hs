@@ -1,25 +1,42 @@
 module ParserTest where
 
+import Parser08.Parser (Token (..), lookAhead, accept)
+
 import Test.Tasty (TestTree, defaultMain, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
-import Parser08.Parser (Token(..), lookAhead)
 
 prettyTestCaseShow :: Show a => String -> a -> TestTree
-prettyTestCaseShow prettyOut construct =
-  testCase prettyOut $
-    show construct @?= prettyOut
+prettyTestCaseShow output construct =
+  testCase output $   show construct @?= output
 
-prettyTestCase :: (Eq a, Show a) => (String -> a) -> String -> a -> TestTree
-prettyTestCase f input result =
-  let prettyIn = if null input then "Empty input" else input in
-  testCase prettyIn $
-    f input @?= result
+prettyTestCase :: (Eq b, Show b) =>
+                  (String -> Either String b) -> String -> Either String b -> TestTree
+prettyTestCase f input expected =
+  case expected of
+    Left  msg   ->  testCase msg $                                            f input @?= Left msg
+    Right value ->  testCase (if null input then "Empty input" else input) $  f input @?= Right value
 
 testParser :: TestTree
-testParser = testGroup "all" testTokenizer
+testParser = testGroup "tokenizer tests" [lookAheadTest, acceptTest]
 
-testTokenizer = [
-  testCase "" $ (lookAhead []) @?= TokEnd,
-  prettyTestCase lookAhead [] TokEnd,
-  prettyTestCase lookAhead "()" TokLParen
-  ]
+lookAheadTest :: TestTree
+lookAheadTest =
+  testGroup
+    "lookAheadTest"
+    [
+        prettyTestCase lookAhead []   $ Right TokEnd
+      , prettyTestCase lookAhead ""   $ Right TokEnd
+      , prettyTestCase lookAhead "*"  $ Left "Bad input: *"
+      , prettyTestCase lookAhead "()" $ Right TokLParen
+    ]
+
+acceptTest :: TestTree
+acceptTest =
+  testGroup
+    "acceptTest"
+    [
+        prettyTestCase accept []    $ Left "Nothing to accept"
+      , prettyTestCase accept ""    $ Left "Nothing to accept"
+      , prettyTestCase accept "*"   $ Right ""
+      , prettyTestCase accept "(*)" $ Right "*)"
+    ]

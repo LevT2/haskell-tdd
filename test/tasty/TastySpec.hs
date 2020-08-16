@@ -1,5 +1,3 @@
-module TastySpec where
-
 import Test.Tasty (TestTree, defaultMain, testGroup)
 
 import ParserTest (testParser)
