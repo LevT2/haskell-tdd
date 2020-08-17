@@ -1,2 +1,2 @@
-{-# OPTIONS_GHC -F -pgmF tasty-discover -optF --modules="*Parser.hs" #-}
+{-# OPTIONS_GHC -F -pgmF tasty-discover -optF --ignores=Driver.hs #-}
 

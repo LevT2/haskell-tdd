@@ -1,0 +1,13 @@
+--module Example2 where
+--
+--import Parser08.Parser (Token (..), lookAhead, accept)
+--
+--import Test.Tasty
+--import Test.Tasty.HUnit
+--
+--test_generateTree :: IO TestTree
+--test_generateTree = do
+--  input <- pure "Some input"
+--  pure $ testCase input $ pure ()
+--
+--unit_empty2 = lookAhead "" @?= Right TokEnd

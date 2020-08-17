@@ -58,7 +58,7 @@ test-suite tasty-discover
     , tasty-discover
     , haskell-tdd
     , tasty
---    , tasty-hunit
+    , tasty-hunit
 --    , tasty-hspec
   default-language: Haskell2010
 
