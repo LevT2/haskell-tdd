@@ -3,11 +3,14 @@ module Parser08.Parser where
 data Token = TokLParen | TokRParen | TokEnd
     deriving (Show, Eq)
 
-lookAhead :: String -> Either String Token
+newtype ScanError = BadInput String
+  deriving (Show, Eq)
+
+lookAhead :: String -> Either ScanError Token
 lookAhead [] = Right TokEnd
 lookAhead (c:cs)    | c == '(' = Right TokLParen
                     | c == ')' = Right TokRParen
-                    | otherwise = Left $ "Bad input: " ++ (c:cs)
+                    | otherwise = Left $ BadInput (c:cs)
 
 accept :: [Char] -> Either String [Char]
 accept [] = Left "Nothing to accept"
