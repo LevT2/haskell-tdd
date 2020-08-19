@@ -12,7 +12,7 @@ lookAhead (c:cs)    | c == '(' = Right TokLParen
                     | c == ')' = Right TokRParen
                     | otherwise = Left $ BadInput (c:cs)
 
-accept :: [Char] -> Either String [Char]
-accept [] = Left "Nothing to accept"
+accept :: [Char] -> Either ScanError [Char]
+accept [] = Left $ BadInput "Nothing to accept"
 accept (c:cs) = Right cs
 
