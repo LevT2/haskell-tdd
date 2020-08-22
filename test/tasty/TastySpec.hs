@@ -1,7 +1,7 @@
 import Test.Tasty (TestTree, defaultMain, testGroup)
 
-import ParserTest (testParser)
+import ParserTest 
 
 main :: IO ()
 main = defaultMain $
-    testGroup "all" [testParser]
+    testGroup "all" [test]
