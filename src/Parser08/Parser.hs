@@ -6,24 +6,27 @@ data Tree = Node Tree Tree | Leaf
 data Token = TokLParen | TokRParen | TokEnd
     deriving (Show, Eq)
 
-data ScanError = NothingToAccept 
-                  | BadInput String 
+  
+data TScanError = NothingToAccept 
+                | BadInput String 
   deriving (Show, Eq)
 
-data ParseError = UnconsumedString String
+data TParseError = UnconsumedString String
                   | BadExpression String
+                  | ScanError TScanError
   deriving (Show, Eq)
+  
 
 --data ScanError = BadInput {input :: String, expected :: [String]}
 --  deriving (Show, Eq)
 
-lookAhead :: String -> Either ScanError Token
+lookAhead :: String -> Either TScanError Token
 lookAhead [] = Right TokEnd
 lookAhead (c:cs)    | c == '(' = Right TokLParen
                     | c == ')' = Right TokRParen
                     | otherwise = Left $ BadInput (c:cs)
 
-accept :: [Char] -> Either ScanError [Char]
+accept :: [Char] -> Either TScanError [Char]
 accept [] = Left $ NothingToAccept
 accept (c:cs) = Right cs
 
@@ -53,7 +56,7 @@ root = \s -> (Leaf, "()")
 --                   else error $ "Missing closing paren in: " ++ show toks'
 --      _ -> error $ "Bad expression: " ++ show toks
 
-parse :: String -> Either ParseError Tree
+parse :: String -> Either TParseError Tree
 parse str = let (tree, str') = root str
             in
                 if null str'
