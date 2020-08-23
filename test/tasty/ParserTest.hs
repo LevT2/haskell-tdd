@@ -1,3 +1,5 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+
 module ParserTest where
 
 import           Parser08.Parser
@@ -5,23 +7,21 @@ import           Parser08.Parser
 import           Test.Tasty       (TestTree, defaultMain, testGroup)
 import           Test.Tasty.HUnit (testCase, (@?=))
 
+
+import Data.Convertible.Base (Convertible(), safeConvert)
+
+
 prettyTestCaseShow :: Show a => String -> a -> TestTree
 prettyTestCaseShow output construct =
   testCase output $   show construct @?= output
 
+
+instance Convertible TParseError TParseError where safeConvert = Right
+instance Convertible TScanError TParseError where safeConvert = Right . ScanError
+
 prettyTestCase :: (Eq b, Show b) =>
-                  (String -> Either TScanError b) -> String -> Either TScanError  b -> TestTree
-prettyTestCase f input expected =
-  case expected of
-    Left error -> case error of
-      NothingToAccept -> testCase (input ++ ": Nothing to accept") $ f input @?= Left NothingToAccept
-      BadInput msg -> testCase msg $ f input @?= Left (BadInput input)
-    Right value -> testCase (if null input then "Empty input" else input) $ f input @?= Right value
-
-
-prettyTestCase2 :: (Eq b, Show b) =>
                   (String -> Either TParseError b) -> String -> Either TParseError  b -> TestTree
-prettyTestCase2 f input expected = case expected of
+prettyTestCase f input expected = case expected of
     Left error -> case error of
       UnconsumedString str -> testCase str $ f input @?= Left (UnconsumedString input)
       ScanError error' ->  case error' of
@@ -63,16 +63,16 @@ acceptTest =
   testGroup
     "acceptTest"
     [
-        prettyTestCase2 accept' []    $ Left (ScanError NothingToAccept)
-      , prettyTestCase2 accept' ""    $ Left (ScanError NothingToAccept)
-      , prettyTestCase2 accept' "*"   $ Right ""
-      , prettyTestCase2 accept' "(*)" $ Right "*)"
+        prettyTestCase accept' []    $ Left (ScanError NothingToAccept)
+      , prettyTestCase accept' ""    $ Left (ScanError NothingToAccept)
+      , prettyTestCase accept' "*"   $ Right ""
+      , prettyTestCase accept' "(*)" $ Right "*)"
     ]
 
 parseTest :: TestTree
 parseTest =
   testGroup "parseTest"
   [
-      prettyTestCase2 parse "()" $ Right Leaf
-    , prettyTestCase2 parse "*"  $ Left (UnconsumedString "*")
+      prettyTestCase parse "()" $ Right Leaf
+    , prettyTestCase parse "*"  $ Left (UnconsumedString "*")
   ]
